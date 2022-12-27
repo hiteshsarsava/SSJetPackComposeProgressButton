@@ -48,7 +48,7 @@ Please get **Android Studio Arctic Fox 2020.3.1** or above [from here](https://d
 
 	```groovy
 	dependencies {
-	        implementation 'com.github.SimformSolutionsPvtLtd:SSJetPackComposeProgressButton:1.0.7'
+	        implementation 'com.github.hiteshsarsava:SSJetPackComposeProgressButton:1.0.8'
 	}
 	```
 
@@ -58,6 +58,19 @@ Please get **Android Studio Arctic Fox 2020.3.1** or above [from here](https://d
 	```kotlin
     var submitButtonState by remember { mutableStateOf(SSButtonState.IDLE) }
     SSJetPackComposeProgressButton(
+        type = SSButtonType.CLOCK,
+        width = 300.dp,
+        height = 50.dp,
+        onClick = {
+            //Perform action on click of button and make it's state to LOADING
+            submitButtonState = SSButtonState.LOADING
+        },
+        assetColor = Color.Red,
+        buttonState = submitButtonState
+    )
+    
+    //Material3 support
+    SSJetPackComposeProgressButtonMaterial3(
         type = SSButtonType.CLOCK,
         width = 300.dp,
         height = 50.dp,
