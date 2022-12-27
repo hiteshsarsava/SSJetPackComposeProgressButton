@@ -58,10 +58,7 @@ import com.simform.ssjetpackcomposeprogressbutton.utils.ONE_FLOAT
 import com.simform.ssjetpackcomposeprogressbutton.utils.TWELVE
 import com.simform.ssjetpackcomposeprogressbutton.utils.TWO
 import com.simform.ssjetpackcomposeprogressbutton.utils.ZERO
-import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonState
-import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonType
-import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSCustomLoadingEffect
-import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSJetPackComposeProgressButton
+import com.simform.ssjetpackcomposeprogressbuttonlibrary.*
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.utils.ten
 
 class MainActivity : ComponentActivity() {
@@ -163,6 +160,21 @@ fun SSLoadingButtonExample() {
         ) {
             //Various example of SSLoadingButton
             item {
+
+                SSJetPackComposeProgressButtonMaterial3(
+                    assetColor = colorResource(id = R.color.pink),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color.White),
+                    buttonBorderStroke = BorderStroke(COMMON_BORDER_WIDTH.dp, SolidColor(colorResource(id = R.color.pink))),
+                    type = SSButtonType.CIRCLE,
+                    onClick = { roundedProgressState2 = SSButtonState.LOADING },
+                    buttonState = roundedProgressState2,
+                    width = COMMON_WIDTH.dp,
+                    height = COMMON_HEIGHT.dp,
+                    padding = PaddingValues(TWELVE.dp),
+                    cornerRadius = COMMON_CORNER_RADIUS,
+                    leftImagePainter = rememberVectorPainter(image = Icons.Default.Home)
+                )
+                
                 SSJetPackComposeProgressButton(
                     assetColor = colorResource(id = R.color.pink),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),

@@ -1,5 +1,6 @@
 package com.simform.ssjetpackcomposeprogressbuttonlibrary
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -112,7 +113,7 @@ fun SSJetPackComposeProgressButton(
     successIconColor: Color = assetColor,
     failureIconColor: Color = assetColor,
     text: String? = null,
-    textModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") textModifier: Modifier = Modifier,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontFamily: FontFamily? = null,
@@ -218,6 +219,285 @@ fun SSJetPackComposeProgressButton(
         contentAlignment = Alignment.Center,
         modifier = Modifier.graphicsLayer { alpha = alphaValue }) {
         Button(
+            onClick = onClick,
+            modifier = Modifier
+                .padding(padding)
+                .size(
+                    width = sizeAnimationMethod(
+                        targetValue = buttonWidth,
+                        durationMillis = speedMillis
+                    ), height = sizeAnimationMethod(
+                        targetValue = buttonHeight,
+                        durationMillis = speedMillis
+                    )
+                ),
+            enabled = enabled,
+            elevation = elevation,
+            shape = RoundedCornerShape(ssAnimateIntAsState(cornerRadiusValue, speedMillis)),
+            border = buttonBorderStroke,
+            colors = colors
+        ) {}
+        //IDLE State icon
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            leftImagePainter?.let {
+                Icon(
+                    painter = it,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .graphicsLayer(
+                            alpha = ssAnimateFloatAsState(
+                                targetValue = iconAlphaValue,
+                                durationMillis = speedMillis
+                            )
+                        )
+                        .size(
+                            ssRepeatedDpAnimation(
+                                initialValue = minHeightWidth - twenty.dp,
+                                targetValue = if (blinkingIcon) {
+                                    minHeightWidth - ten.dp
+                                } else {
+                                    minHeightWidth - twenty.dp
+                                },
+                                durationMillis = speedMillis
+                            )
+                        ),
+                    tint = ssRepeatedColorAnimation(
+                        assetColor, if (blinkingIcon) {
+                            Color.White
+                        } else {
+                            assetColor
+                        }, speedMillis
+                    )
+                )
+            }
+            val alphaText = ssAnimateFloatAsState(
+                targetValue = iconAlphaValue,
+                durationMillis = speedMillis
+            )
+            if (text != null) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.graphicsLayer { alpha = alphaText }) {
+                    Text(
+                        text = text,
+                        modifier = textModifier,
+                        color = assetColor,
+                        fontSize = fontSize,
+                        fontStyle = fontStyle,
+                        fontFamily = fontFamily,
+                        fontWeight = fontWeight
+                    )
+                }
+            }
+            rightImagePainter?.let {
+                Icon(
+                    painter = it,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .graphicsLayer(
+                            alpha = ssAnimateFloatAsState(
+                                targetValue = iconAlphaValue,
+                                durationMillis = speedMillis
+                            )
+                        )
+                        .size(
+                            ssRepeatedDpAnimation(
+                                initialValue = minHeightWidth - twenty.dp,
+                                targetValue = if (blinkingIcon) {
+                                    minHeightWidth - ten.dp
+                                } else {
+                                    minHeightWidth - twenty.dp
+                                },
+                                durationMillis = speedMillis
+                            )
+                        ),
+                    tint = ssRepeatedColorAnimation(
+                        assetColor, if (blinkingIcon) {
+                            Color.White
+                        } else {
+                            assetColor
+                        }, speedMillis
+                    )
+                )
+            }
+        }
+        //SUCCESS State icon
+        Icon(
+            painter = successIconPainter,
+            contentDescription = null,
+            modifier = Modifier
+                .graphicsLayer(
+                    alpha = ssAnimateFloatAsState(
+                        targetValue = successIconAlphaValue,
+                        durationMillis = speedMillis
+                    )
+                )
+                .size(minHeightWidth - twenty.dp),
+            tint = successIconColor
+        )
+        //FAILURE State icon
+        Icon(
+            painter = failureIconPainter,
+            contentDescription = null,
+            modifier = Modifier
+                .graphicsLayer(
+                    alpha = ssAnimateFloatAsState(
+                        targetValue = failureAlphaValue,
+                        durationMillis = speedMillis
+                    )
+                )
+                .size(minHeightWidth - twenty.dp),
+            tint = failureIconColor
+        )
+        //LOADING State
+        var effectiveMinHeight = minHeightWidth
+        buttonBorderStroke?.width?.let {
+            effectiveMinHeight = effectiveMinHeight - it - it
+        }
+        PrintLoadingBar(
+            type = type,
+            progressAlpha = ssAnimateFloatAsState(progressAlphaValue, speedMillis),
+            assetColor = assetColor,
+            minHeightWidth = effectiveMinHeight,
+            durationMillis = speedMillis,
+            hourHandColor = hourHandColor,
+            customLoadingIconPainter = customLoadingIconPainter,
+            customLoadingEffect = customLoadingEffect,
+            customLoadingPadding = customLoadingPadding
+        )
+    }
+}
+
+@Composable
+fun SSJetPackComposeProgressButtonMaterial3(
+    type: SSButtonType,
+    width: Dp,
+    height: Dp,
+    onClick: () -> Unit,
+    assetColor: Color,
+    buttonState: SSButtonState,
+    buttonBorderStroke: BorderStroke? = null,
+    blinkingIcon: Boolean = false,
+    cornerRadius: Int = twenty,
+    speedMillis: Int = thousand,
+    enabled: Boolean = true,
+    elevation: androidx.compose.material3.ButtonElevation? = androidx.compose.material3.ButtonDefaults.buttonElevation(),
+    colors: androidx.compose.material3.ButtonColors = androidx.compose.material3.ButtonDefaults.buttonColors(),
+    padding: PaddingValues = PaddingValues(0.dp),
+    alphaValue: Float = 1f,
+    leftImagePainter: Painter? = null,
+    rightImagePainter: Painter? = null,
+    successIconPainter: Painter = rememberVectorPainter(image = Icons.Default.Done),
+    failureIconPainter: Painter = rememberVectorPainter(image = Icons.Outlined.Info),
+    successIconColor: Color = assetColor,
+    failureIconColor: Color = assetColor,
+    text: String? = null,
+    @SuppressLint("ModifierParameter") textModifier: Modifier = Modifier,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontFamily: FontFamily? = null,
+    fontWeight: FontWeight? = null,
+    hourHandColor: Color = Color.Black,
+    customLoadingIconPainter: Painter = painterResource(id = R.drawable.simform_logo),
+    customLoadingEffect: SSCustomLoadingEffect = SSCustomLoadingEffect(
+        rotation = false,
+        zoomInOut = false,
+        colorChanger = false
+    ),
+    customLoadingPadding: Int = ZERO
+) {
+    var buttonWidth by remember { mutableStateOf(width) }
+    var buttonHeight by remember { mutableStateOf(height) }
+    var iconAlphaValue by remember { mutableStateOf(oneFloat) }
+    var successIconAlphaValue by remember { mutableStateOf(zeroFloat) }
+    var failureAlphaValue by remember { mutableStateOf(zeroFloat) }
+    var progressAlphaValue by remember { mutableStateOf(zeroFloat) }
+    var cornerRadiusValue by remember { mutableStateOf(cornerRadius) }
+    val minHeightWidth = if (height > width) {
+        width
+    } else {
+        height
+    }
+    when (buttonState) {
+        SSButtonState.IDLE -> {
+            if (height > width) {
+                buttonHeight = height
+            } else {
+                buttonWidth = width
+            }
+            iconAlphaValue = oneFloat
+            failureAlphaValue = zeroFloat
+            successIconAlphaValue = zeroFloat
+            progressAlphaValue = zeroFloat
+            cornerRadiusValue = cornerRadius
+        }
+        SSButtonState.LOADING -> {
+            if (height > width) {
+                buttonHeight = width
+            } else {
+                buttonWidth = height
+            }
+            iconAlphaValue = zeroFloat
+            failureAlphaValue = zeroFloat
+            successIconAlphaValue = zeroFloat
+            progressAlphaValue = oneFloat
+            cornerRadiusValue = fifty
+        }
+        SSButtonState.SUCCESS -> {
+            LaunchedEffect(key1 = LAUNCH_EFFECT_KEY, block = {
+                if (height > width) {
+                    buttonHeight = width
+                } else {
+                    buttonWidth = height
+                }
+                iconAlphaValue = zeroFloat
+                failureAlphaValue = zeroFloat
+                successIconAlphaValue = oneFloat
+                progressAlphaValue = zeroFloat
+                cornerRadiusValue = fifty
+                //Delay to show success icon and then IDLE state
+                delay((speedMillis * two).toLong())
+                if (height > width) {
+                    buttonHeight = height
+                } else {
+                    buttonWidth = width
+                }
+                iconAlphaValue = oneFloat
+                failureAlphaValue = zeroFloat
+                successIconAlphaValue = zeroFloat
+                cornerRadiusValue = cornerRadius
+            })
+        }
+        SSButtonState.FAILIURE -> {
+            LaunchedEffect(key1 = LAUNCH_EFFECT_KEY, block = {
+                if (height > width) {
+                    buttonHeight = width
+                } else {
+                    buttonWidth = height
+                }
+                successIconAlphaValue = zeroFloat
+                iconAlphaValue = zeroFloat
+                progressAlphaValue = zeroFloat
+                failureAlphaValue = oneFloat
+                cornerRadiusValue = fifty
+                //Delay to show failure icon and then IDLE state
+                delay((speedMillis * two).toLong())
+                if (height > width) {
+                    buttonHeight = height
+                } else {
+                    buttonWidth = width
+                }
+                iconAlphaValue = oneFloat
+                failureAlphaValue = zeroFloat
+                successIconAlphaValue = zeroFloat
+                cornerRadiusValue = cornerRadius
+            })
+        }
+    }
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.graphicsLayer { alpha = alphaValue }) {
+        androidx.compose.material3.Button(
             onClick = onClick,
             modifier = Modifier
                 .padding(padding)
